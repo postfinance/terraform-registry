@@ -1,24 +1,24 @@
-package registry_test
+package provider_test
 
 import (
 	"encoding/json"
 	"testing"
 
-	"github.com/marcsauter/tfregistry/internal/registry"
+	"github.com/marcsauter/terraform-registry/internal/registry/provider"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestArch(t *testing.T) {
-	type arch struct {
-		Arch registry.Arch `json:"arch"`
+func TestOS(t *testing.T) {
+	type os struct {
+		OS provider.OS `json:"os"`
 	}
 
-	obj := arch{
-		Arch: registry.ArchAMD64,
+	obj := os{
+		OS: provider.OSLinux,
 	}
 
-	str := []byte(`{"arch":"amd64"}`)
+	str := []byte(`{"os":"linux"}`)
 
 	t.Run("marshal", func(t *testing.T) {
 		act, err := json.Marshal(&obj)
@@ -27,13 +27,13 @@ func TestArch(t *testing.T) {
 	})
 
 	t.Run("unmarshal", func(t *testing.T) {
-		act := arch{}
+		act := os{}
 		err := json.Unmarshal(str, &act)
 		require.NoError(t, err)
 		assert.Equal(t, obj, act)
 	})
 }
 
-func TestUnmarshalArch(t *testing.T) {
+func TestUnmarshalOS(t *testing.T) {
 
 }

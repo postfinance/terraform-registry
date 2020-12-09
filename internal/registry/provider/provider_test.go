@@ -4,8 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/marcsauter/tfregistry/internal/registry"
-	"github.com/marcsauter/tfregistry/internal/registry/provider"
+	"github.com/marcsauter/terraform-registry/internal/registry/provider"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -18,8 +17,8 @@ func TestMarshalListResponse(t *testing.T) {
 				Protocols: []string{"4", "5.1"},
 				Platforms: []provider.Platform{
 					{
-						OS:   registry.OSLinux,
-						Arch: registry.ArchAMD64,
+						OS:   provider.OSLinux,
+						Arch: provider.ArchAMD64,
 					},
 				},
 			},
