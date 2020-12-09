@@ -21,24 +21,27 @@ const (
 
 // Registry represents the Terraform registry
 type Registry struct {
-	router     *chi.Mux
-	server     *http.Server
-	listenAddr string
-	services   map[string]string
+	listenAddr      string
+	providerBackend provider.Backend
 
-	reg prometheus.Registerer
-	wg  *sync.WaitGroup
+	router   *chi.Mux
+	services map[string]string
+	server   *http.Server
+	wg       *sync.WaitGroup
+
 	l   *zap.SugaredLogger
+	reg prometheus.Registerer
 }
 
 // New initializes the Registry.
 func New(l *zap.SugaredLogger, reg prometheus.Registerer, options ...Option) (*Registry, error) {
 	r := &Registry{
+		l:   l,
+		reg: reg,
+
+		wg:       &sync.WaitGroup{},
 		router:   chi.NewRouter(),
 		services: make(map[string]string),
-		l:        l,
-		reg:      reg,
-		wg:       &sync.WaitGroup{},
 	}
 
 	for _, opt := range options {
@@ -61,7 +64,7 @@ func New(l *zap.SugaredLogger, reg prometheus.Registerer, options ...Option) (*R
 	r.router.Method("GET", "/metrics", promHandler())
 
 	r.services["providers.v1"] = "/v1/providers"
-	r.router.Mount("/v1/providers", provider.API{}.Routes())
+	r.router.Mount("/v1/providers", provider.New(r.providerBackend).Routes())
 
 	return r, nil
 }

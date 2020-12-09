@@ -17,8 +17,8 @@ func TestMarshalListResponse(t *testing.T) {
 				Protocols: []string{"4", "5.1"},
 				Platforms: []provider.Platform{
 					{
-						OS:   provider.OSLinux,
-						Arch: provider.ArchAMD64,
+						OS:   "linux",
+						Arch: "amd64",
 					},
 				},
 			},

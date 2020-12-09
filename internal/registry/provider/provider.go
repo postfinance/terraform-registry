@@ -2,17 +2,88 @@
 package provider
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi"
+	"github.com/unrolled/render"
 )
 
+// Backend defines the interface for a provider backend
+type Backend interface {
+	// :namespace :type
+	List(string, string) (*ListResponse, error)
+	// :namespace :type :version :os :arch
+	Find(string, string, string, string, string) (*FindResponse, error)
+}
+
 // API implements the provider registry API
-type API struct{}
+type API struct {
+	b Backend
+	r *render.Render
+}
+
+// New returns a new provider API
+func New(backend Backend) *API {
+	return &API{
+		b: backend,
+		r: render.New(),
+	}
+}
 
 // Routes returns a router for the provider registry API
 func (a API) Routes() chi.Router {
 	api := chi.NewRouter()
 
+	// :namespace/:type/versions
+	api.Get("/{name}/{type}/versions", a.listHandler())
+
+	// :namespace/:type/:version/download/:os/:arch
+	api.Get("/{namespace}/{type}/{version}/download/{os}/{arch}", a.findHandler())
+
 	return api
+}
+
+func errorResponse(err error) interface{} {
+	return struct {
+		Errors []string `json:"errors"`
+	}{
+		Errors: []string{err.Error()},
+	}
+}
+
+func (a API) listHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		n := chi.URLParam(r, "namespace")
+		t := chi.URLParam(r, "type")
+
+		resp, err := a.b.List(n, t)
+		if err != nil {
+			_ = a.r.JSON(w, http.StatusNotFound, errorResponse(err))
+
+			return
+		}
+
+		_ = a.r.JSON(w, http.StatusOK, resp)
+	}
+}
+
+func (a API) findHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		n := chi.URLParam(r, "namespace")
+		t := chi.URLParam(r, "type")
+		v := chi.URLParam(r, "version")
+		os := chi.URLParam(r, "os")
+		arch := chi.URLParam(r, "a")
+
+		resp, err := a.b.Find(n, t, v, os, arch)
+		if err != nil {
+			_ = a.r.JSON(w, http.StatusNotFound, errorResponse(err))
+
+			return
+		}
+
+		_ = a.r.JSON(w, http.StatusOK, resp)
+	}
 }
 
 // ListResponse implements the response to a list request
@@ -29,15 +100,15 @@ type Provider struct {
 
 // Platform implements platform informations
 type Platform struct {
-	OS   OS   `json:"os"`
-	Arch Arch `json:"arch"`
+	OS   string `json:"os"`
+	Arch string `json:"arch"`
 }
 
 // FindResponse represents the response to a find request
 type FindResponse struct {
 	Protocols           []string    `json:"protocols"`
-	OS                  OS          `json:"os"`
-	Arch                Arch        `json:"arch"`
+	OS                  string      `json:"os"`
+	Arch                string      `json:"arch"`
 	Filename            string      `json:"filename"`
 	DownloadURL         string      `json:"download_url"`
 	ShasumsURL          string      `json:"shasums_url"`

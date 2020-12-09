@@ -8,8 +8,11 @@ require (
 	github.com/go-chi/render v1.0.1
 	github.com/kr/text v0.2.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/postfinance/httpclient v0.1.5
+	github.com/postfinance/profiler v0.1.1
 	github.com/prometheus/client_golang v1.8.0
 	github.com/stretchr/testify v1.6.1
+	github.com/unrolled/render v1.0.3
 	go.uber.org/zap v1.16.0
 	golang.org/x/mod v0.1.1-0.20191107180719-034126e5016b // indirect
 	golang.org/x/sys v0.0.0-20201024232916-9f70ab9862d5 // indirect
