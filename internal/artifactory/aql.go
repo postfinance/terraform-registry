@@ -14,6 +14,11 @@ func (a AQL) String() string {
 	return a.query
 }
 
+// Bytes returns the query a byte slice
+func (a AQL) Bytes() []byte {
+	return []byte(a.query)
+}
+
 // curl -u sauterm -X POST -H "Content-Type: text/plain" -d 'items.find({"repo":{"$eq":"linux-generic-local"},"path":{"$eq":"terraform/providers"},"name":{"$match":"terraform-provider-*"}})' https://repo.pnet.ch/artifactory/api/search/aql
 
 // FindItems build a items.find AQL expression

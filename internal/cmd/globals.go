@@ -2,11 +2,14 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"time"
 
+	"github.com/marcsauter/terraform-registry/internal/artifactory"
 	"github.com/marcsauter/terraform-registry/internal/registry/provider"
 	"github.com/marcsauter/terraform-registry/internal/version"
+	"github.com/postfinance/httpclient"
 	"github.com/postfinance/profiler"
 )
 
@@ -26,11 +29,21 @@ type Globals struct {
 }
 
 type providerBackendFlags struct {
-	BaseURL string `help:"BaseURL of the HTTP file server" default:"https://terraform.pnet.ch"`
+	URL      string `help:"URL of the HTTP file server" required:""`
+	Username string `help:"Username"`
+	Password string `help:"Password"`
 }
 
 func (p *providerBackendFlags) backend() (provider.Backend, error) {
-	return nil, nil
+	c, err := artifactory.NewClient(p.URL,
+		httpclient.WithUsername(p.Username),
+		httpclient.WithPassword(p.Password),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return provider.New(c)
+	return nil, fmt.Errorf("not yet implmented")
 }
 
 type profilerFlags struct {

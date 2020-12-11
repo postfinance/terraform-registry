@@ -8,14 +8,6 @@ import (
 	"github.com/unrolled/render"
 )
 
-// Backend defines the interface for a provider backend
-type Backend interface {
-	// :namespace :type
-	List(string, string) (*ListResponse, error)
-	// :namespace :type :version :os :arch
-	Find(string, string, string, string, string) (*FindResponse, error)
-}
-
 // API implements the provider registry API
 type API struct {
 	b Backend

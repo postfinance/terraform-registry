@@ -1,9 +1,12 @@
 //go:generate httpclient-gen-go -path . -package artifactory -force
+
 // Package artifactory implements a minimal artifactory client
 package artifactory
 
 import (
+	"bytes"
 	"context"
+	"io/ioutil"
 	"net/http"
 	"path"
 
@@ -38,17 +41,23 @@ var _ QueryService = &QueryImpl{}
 
 // Items returns all items matching the AQL expression
 func (s QueryImpl) Items(ctx context.Context, find AQL) ([]Artifact, *http.Response, error) {
+
+	// the AQL query has to be text/plain but the answer will be application/json
+	s.client.RequestCallback = func(r *http.Request) *http.Request {
+		r.Header.Set("Content-Type", httpclient.ContentTypeText)
+		r.Body = ioutil.NopCloser(bytes.NewBuffer(find.Bytes()))
+
+		return r
+	}
+
 	req, err := s.client.NewRequest(
 		http.MethodPost,
-		path.Join(s.client.BaseURL.String(), AQLPath),
-		find.String(),
+		path.Join(s.client.BaseURL.Path, AQLPath),
+		nil, //bytes.NewBuffer(find.Bytes()),
 	)
 	if err != nil {
 		return nil, nil, err
 	}
-
-	// has to be text/plain for AQL
-	req.Header.Add("Content-Type", httpclient.ContentTypeText)
 
 	type itemsFindResponse struct {
 		Results []Artifact `json:"results"`
