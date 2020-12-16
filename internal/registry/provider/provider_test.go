@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/marcsauter/terraform-registry/internal/registry/provider"
+	"github.com/marcsauter/terraform-registry/pkg/provider"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMarshalListResponse(t *testing.T) {
-	r := provider.ListResponse{
-		Versions: []provider.Provider{
+	r := provider.VersionsResponse{
+		Versions: []provider.Version{
 			{
 				Version:   "0.0.1",
 				Protocols: []string{"4", "5.1"},

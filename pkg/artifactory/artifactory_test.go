@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/marcsauter/terraform-registry/internal/artifactory"
+	"github.com/marcsauter/terraform-registry/pkg/artifactory"
 	"github.com/postfinance/httpclient"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

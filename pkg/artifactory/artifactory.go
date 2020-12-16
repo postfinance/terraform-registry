@@ -41,7 +41,6 @@ var _ QueryService = &QueryImpl{}
 
 // Items returns all items matching the AQL expression
 func (s QueryImpl) Items(ctx context.Context, find AQL) ([]Artifact, *http.Response, error) {
-
 	// the AQL query has to be text/plain but the answer will be application/json
 	s.client.RequestCallback = func(r *http.Request) *http.Request {
 		r.Header.Set("Content-Type", httpclient.ContentTypeText)
@@ -53,7 +52,7 @@ func (s QueryImpl) Items(ctx context.Context, find AQL) ([]Artifact, *http.Respo
 	req, err := s.client.NewRequest(
 		http.MethodPost,
 		path.Join(s.client.BaseURL.Path, AQLPath),
-		nil, //bytes.NewBuffer(find.Bytes()),
+		nil,
 	)
 	if err != nil {
 		return nil, nil, err

@@ -30,9 +30,15 @@ func (r runCmd) Run(app *kong.Context, g *Globals, l *zap.SugaredLogger, v *vers
 		return err
 	}
 
+	mb, err := g.ModuleBackend.backend()
+	if err != nil {
+		return err
+	}
+
 	reg, err := registry.New(l, prometheus.NewRegistry(),
 		registry.WithHTTPListen(g.HTTPListen),
 		registry.WithProviderBackend(pb),
+		registry.WithModuleBackend(mb),
 	)
 	if err != nil {
 		return err

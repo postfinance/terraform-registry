@@ -1,6 +1,9 @@
 package registry
 
-import "github.com/marcsauter/terraform-registry/internal/registry/provider"
+import (
+	"github.com/marcsauter/terraform-registry/pkg/module"
+	"github.com/marcsauter/terraform-registry/pkg/provider"
+)
 
 // Option function to configure the Terraform registry
 type Option func(*Registry)
@@ -16,5 +19,12 @@ func WithHTTPListen(listenAddr string) Option {
 func WithProviderBackend(b provider.Backend) Option {
 	return func(reg *Registry) {
 		reg.providerBackend = b
+	}
+}
+
+// WithModuleBackend sets the provider backend to use.
+func WithModuleBackend(b module.Backend) Option {
+	return func(reg *Registry) {
+		reg.moduleBackend = b
 	}
 }

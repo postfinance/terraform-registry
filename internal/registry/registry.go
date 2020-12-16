@@ -9,7 +9,10 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
-	"github.com/marcsauter/terraform-registry/internal/registry/provider"
+	moduleAPI "github.com/marcsauter/terraform-registry/internal/registry/module"
+	providerAPI "github.com/marcsauter/terraform-registry/internal/registry/provider"
+	"github.com/marcsauter/terraform-registry/pkg/module"
+	"github.com/marcsauter/terraform-registry/pkg/provider"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
@@ -23,6 +26,7 @@ const (
 type Registry struct {
 	listenAddr      string
 	providerBackend provider.Backend
+	moduleBackend   module.Backend
 
 	router   *chi.Mux
 	services map[string]string
@@ -63,9 +67,21 @@ func New(l *zap.SugaredLogger, reg prometheus.Registerer, options ...Option) (*R
 
 	r.router.Method("GET", "/metrics", promHandler())
 
-	r.services["providers.v1"] = "/v1/providers"
-	r.router.Mount("/v1/providers", provider.New(r.providerBackend).Routes())
+	if r.providerBackend != nil {
+		p := "/v1/providers"
 
+		l.Info("mount api endpoint", "path", p)
+		r.services["providers.v1"] = p
+		r.router.Mount(p, providerAPI.New(r.providerBackend).Routes())
+	}
+
+	if r.moduleBackend != nil {
+		p := "/v1/modules"
+
+		l.Info("mount api endpoint", "path", p)
+		r.services["modules.v1"] = p
+		r.router.Mount(p, moduleAPI.New(r.moduleBackend).Routes())
+	}
 	return r, nil
 }
 
