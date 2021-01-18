@@ -37,7 +37,10 @@ linters-settings:
     suggest-new: true
   misspell:
     locale: US
-
+  nolintlint:
+    allow-leading-space: false
+    require-explanation: true
+    allow-no-explanation: []
 linters:
   disable-all: true
   enable:
@@ -67,6 +70,7 @@ linters:
     # - lll
     - maligned
     - misspell
+    - nolintlint
     - nakedret
     - prealloc
     - rowserrcheck
