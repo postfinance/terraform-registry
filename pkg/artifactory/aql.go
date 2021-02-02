@@ -19,7 +19,7 @@ func (a AQL) Bytes() []byte {
 	return []byte(a.query)
 }
 
-// curl -u sauterm -X POST -H "Content-Type: text/plain" -d 'items.find({"repo":{"$eq":"linux-generic-local"},"path":{"$eq":"terraform/providers"},"name":{"$match":"terraform-provider-*"}})' https://repo.pnet.ch/artifactory/api/search/aql
+// curl -u sauterm -X POST -H "Content-Type: text/plain" -d 'items.find({"repo":{"$eq":"linux-generic-local"},"path":{"$eq":"terraform/providers"},"name":{"$match":"terraform-provider-*"}}).include("repo", "path", "name", "sha256")' https://repo.pnet.ch/artifactory/api/search/aql
 
 // FindItems build a items.find AQL expression
 func FindItems(repo, path, name string) AQL {
@@ -30,7 +30,7 @@ func FindItems(repo, path, name string) AQL {
 	}
 
 	return AQL{
-		query: fmt.Sprintf(`items.find({%s})`, strings.Join(q, ",")),
+		query: fmt.Sprintf(`items.find({%s}).include("repo", "path", "name", "sha256")`, strings.Join(q, ",")),
 	}
 }
 

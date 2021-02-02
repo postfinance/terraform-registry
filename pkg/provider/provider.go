@@ -22,8 +22,8 @@ type VersionsResponse struct {
 // Version implements the provider version information
 type Version struct {
 	Version   string     `json:"version"`
-	Protocols []string   `json:"protocols"`
-	Platforms []Platform `json:"platforms"`
+	Protocols []string   `json:"protocols,omitempty"`
+	Platforms []Platform `json:"platforms,omitempty"`
 }
 
 // Platform implments the target platform

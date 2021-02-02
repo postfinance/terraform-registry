@@ -1,6 +1,6 @@
 //go:generate httpclient-gen-go -path . -package artifactory -force
 
-// Package artifactory implements a minimal artifactory client
+// Package artifactory implements a minimal artifactory client and the provider backend for the PostFinance Artifactory
 package artifactory
 
 import (
@@ -20,11 +20,10 @@ const (
 
 // Artifact represents the artifact
 type Artifact struct {
-	Repo string `json:"repo"`
-	Path string `json:"path"`
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Size int    `json:"size"`
+	Repo   string `json:"repo"`
+	Path   string `json:"path"`
+	Name   string `json:"name"`
+	SHA256 string `json:"sha256"`
 }
 
 // QueryService interface

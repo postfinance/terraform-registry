@@ -40,7 +40,11 @@ linters-settings:
   nolintlint:
     allow-leading-space: false
     require-explanation: true
-    allow-no-explanation: []
+    allow-no-explanation:
+      - gocognit
+      - funlen
+      - gocyclo
+
 linters:
   disable-all: true
   enable:
@@ -51,7 +55,8 @@ linters:
     - dupl
     - errcheck
     - funlen
-    # - gochecknoglobals
+    - nolintlint
+    - gochecknoglobals
     - gochecknoinits
     - gocognit
     - goconst
@@ -70,7 +75,6 @@ linters:
     # - lll
     - maligned
     - misspell
-    - nolintlint
     - nakedret
     - prealloc
     - rowserrcheck

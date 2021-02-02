@@ -5,23 +5,25 @@ import (
 	"os"
 	"time"
 
-	"github.com/marcsauter/terraform-registry/internal/version"
+	"github.com/marcsauter/terraform-registry/pkg/artifactory"
 	"github.com/marcsauter/terraform-registry/pkg/module"
 	"github.com/marcsauter/terraform-registry/pkg/provider"
 	"github.com/postfinance/profiler"
+	"github.com/zbindenren/king"
 )
 
 // CLI is the Server command.
 type CLI struct {
-	Run runCmd `cmd:"true" help:"Start the terraform-registry." default:"true" hidden:"true"`
+	Run runCmd `cmd:"true" help:"Start the registry." default:"true" hidden:"true"`
 	Globals
 }
 
 // Globals are the global parameters for the lslb server.
 type Globals struct {
 	Debug           bool                 `help:"Log debug output."`
-	Version         version.Flag         `help:"Show version information."`
+	Version         king.VersionFlag     `help:"Show version information"`
 	HTTPListen      string               `help:"HTTP Port." default:":8080"`
+	Namespace       string               `help:"The namespace portion of the address of the requested provider." req:""`
 	ModuleBackend   moduleBackendFlags   `embed:"true" prefix:"module-backend-"`
 	ProviderBackend providerBackendFlags `embed:"true" prefix:"provider-backend-"`
 	Profiler        profilerFlags        `embed:"true" prefix:"profiler-"`
@@ -44,7 +46,7 @@ type providerBackendFlags struct {
 }
 
 func (p *providerBackendFlags) backend() (provider.Backend, error) {
-	return nil, nil
+	return artifactory.New(p.URL, p.Username, p.Password)
 }
 
 type profilerFlags struct {
