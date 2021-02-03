@@ -67,7 +67,7 @@ curl -s ttp://localhost:8080/v1/providers/postfinance/example/versions | jq
 {
   "versions": [
     {
-      "version": "1.1.8",
+      "version": "0.0.1",
       "protocols": [
         "5.0"
       ],
@@ -96,7 +96,7 @@ curl -s ttp://localhost:8080/v1/providers/postfinance/example/versions | jq
 
 ### Provider download
 ```shell
-curl -s http://localhost:8080/v1/providers/postfinance/example/1.1.8/download/linux/amd64 | jq
+curl -s http://localhost:8080/v1/providers/postfinance/example/0.0.1/download/linux/amd64 | jq
 ```
 ```json
 {
@@ -105,13 +105,17 @@ curl -s http://localhost:8080/v1/providers/postfinance/example/1.1.8/download/li
   ],
   "os": "linux",
   "arch": "amd64",
-  "filename": "terraform-provider-example_linux_x86_64-1.1.8.zip",
-  "download_url": "https://repo.example.com/artifactory/linux-generic-local/terraform/providers/terraform-provider-example/terraform-provider-example_linux_x86_64-1.1.8.zip",
-  "shasums_url": "https://repo.example.com/artifactory/linux-generic-local/terraform/providers/terraform-provider-example/terraform-provider-example_1.1.8_SHA256SUMS.txt",
-  "shasums_signature_url": "https://repo.example.com/artifactory/linux-generic-local/terraform/providers/terraform-provider-example/terraform-provider-example_1.1.8_SHA256SUMS.txt.sig",
+  "filename": "terraform-provider-example_linux_x86_64-0.0.1.zip",
+  "download_url": "https://repo.example.com/artifactory/generic/terraform/providers/terraform-provider-example/terraform-provider-example_linux_x86_64-0.0.1.zip",
+  "shasums_url": "https://repo.example.com/artifactory/generic/terraform/providers/terraform-provider-example/terraform-provider-example_0.0.1_SHA256SUMS.txt",
+  "shasums_signature_url": "https://repo.example.com/artifactory/generic/terraform/providers/terraform-provider-example/terraform-provider-example_0.0.1_SHA256SUMS.txt.sig",
   "shasum": "d7dddb0a94c4388e4e3bf5f68faea18c46eab8aaceaec8954b269a4a29f13c29",
   "signing_keys": {
-    "gpg_public_keys": null
+    "gpg_public_keys": [
+      {
+        "key_id": "C1C252F5499702CB",
+        "ascii_armor": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n ... -----END PGP PUBLIC KEY BLOCK-----\n"
+      }
+    ]
   }
-}
-```
+}```
