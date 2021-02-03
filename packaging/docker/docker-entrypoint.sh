@@ -2,5 +2,5 @@
 set -e
 
 
-exec /usr/bin/cmd "$@"
+exec /usr/bin/registry "$@"
 
