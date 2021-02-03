@@ -1,4 +1,4 @@
-[![Release](https://img.shields.io/github/release/postfinance/terraform-registry.svg?style=for-the-badge)](https://github.com/postfinance/terraform-registry/releases/latest)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/postfinance/terraform-registry?style=for-the-badge)](https://github.com/postfinance/terraform-registry/releases/latest)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE)
 [![Build](https://img.shields.io/github/workflow/status/postfinance/terraform-registry/build?style=for-the-badge)](https://github.com/postfinance/terraform-registry/actions?query=workflow%3Abuild)
 [![Go Report Card](https://img.shields.io/badge/GOREPORT-A%2B-brightgreen.svg?style=for-the-badge)](https://goreportcard.com/report/github.com/postfinance/terraform-registry)

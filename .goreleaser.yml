@@ -1,6 +1,8 @@
 project_name: terraform-registry
 release:
-    disable: true
+  github:
+    owner: postfinance
+    name: terraform-registry
 builds:
     - id: registry
       goos:
