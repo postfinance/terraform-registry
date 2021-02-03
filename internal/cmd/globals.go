@@ -2,6 +2,11 @@
 package cmd
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -40,14 +45,37 @@ func (m *moduleBackendFlags) backend() (module.Backend, error) {
 }
 
 type providerBackendFlags struct {
-	URL               string   `help:"URL of the provider backend. If not set, the provider registry will not be provided."`
-	Username          string   `help:"Username"`
-	Password          string   `help:"Password"`
-	GPGPublicKeyFiles []string `help:"File(s) with ASCII armored GPG public keys" type:"existingfile" placeholder:"KEYFILE" required:""`
+	URL               string        `help:"URL of the provider backend. If not set, the provider registry will not be provided."`
+	Username          string        `help:"Username"`
+	Password          string        `help:"Password"`
+	CACert            string        `help:"CA certificate file." type:"existingfile"`
+	GPGPublicKeyFiles []string      `help:"File(s) with ASCII armored GPG public keys" type:"existingfile" placeholder:"KEYFILE" required:""`
+	Timeout           time.Duration `help:"The request timeout." default:"10s"`
 }
 
 func (p *providerBackendFlags) backend() (provider.Backend, error) {
-	return artifactory.New(p.URL, p.Username, p.Password, p.GPGPublicKeyFiles)
+	c := &http.Client{
+		Timeout: p.Timeout,
+	}
+
+	if p.CACert != "" {
+		caCert, err := ioutil.ReadFile(p.CACert)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		caCertPool := x509.NewCertPool()
+		caCertPool.AppendCertsFromPEM(caCert)
+
+		c.Transport = &http.Transport{
+			TLSClientConfig: &tls.Config{
+				MinVersion: tls.VersionTLS12,
+				RootCAs:    caCertPool,
+			},
+		}
+	}
+
+	return artifactory.New(c, p.URL, p.Username, p.Password, p.GPGPublicKeyFiles)
 }
 
 type profilerFlags struct {

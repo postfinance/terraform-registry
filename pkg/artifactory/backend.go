@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"path"
 	"strings"
@@ -33,10 +34,11 @@ type Providers struct {
 }
 
 // New return a new provider.Backend for Artifactory
-func New(baseURL, username, password string, gpgPublicKeyFiles []string) (*Providers, error) {
+func New(client *http.Client, baseURL, username, password string, gpgPublicKeyFiles []string) (*Providers, error) {
 	c, err := NewClient(baseURL,
 		httpclient.WithUsername(username),
 		httpclient.WithPassword(password),
+		httpclient.WithHTTPClient(client),
 	)
 	if err != nil {
 		return nil, err
