@@ -1,8 +1,8 @@
 package registry
 
 import (
-	"github.com/marcsauter/terraform-registry/pkg/module"
-	"github.com/marcsauter/terraform-registry/pkg/provider"
+	"github.com/postfinance/terraform-registry/pkg/module"
+	"github.com/postfinance/terraform-registry/pkg/provider"
 )
 
 // Option function to configure the Terraform registry

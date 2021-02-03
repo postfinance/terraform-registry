@@ -5,9 +5,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/marcsauter/terraform-registry/pkg/artifactory"
-	"github.com/marcsauter/terraform-registry/pkg/module"
-	"github.com/marcsauter/terraform-registry/pkg/provider"
+	"github.com/postfinance/terraform-registry/pkg/artifactory"
+	"github.com/postfinance/terraform-registry/pkg/module"
+	"github.com/postfinance/terraform-registry/pkg/provider"
 	"github.com/postfinance/profiler"
 	"github.com/zbindenren/king"
 )

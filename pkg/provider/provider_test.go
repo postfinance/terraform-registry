@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/marcsauter/terraform-registry/pkg/provider"
+	"github.com/postfinance/terraform-registry/pkg/provider"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

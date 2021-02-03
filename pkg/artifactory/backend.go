@@ -10,7 +10,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/marcsauter/terraform-registry/pkg/provider"
+	"github.com/postfinance/terraform-registry/pkg/provider"
 	"github.com/postfinance/httpclient"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"

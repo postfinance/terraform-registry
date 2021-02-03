@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/alecthomas/kong"
-	"github.com/marcsauter/terraform-registry/internal/registry"
+	"github.com/postfinance/terraform-registry/internal/registry"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
 )

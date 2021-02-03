@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/marcsauter/terraform-registry/pkg/provider"
+	"github.com/postfinance/terraform-registry/pkg/provider"
 	"github.com/unrolled/render"
 )
 

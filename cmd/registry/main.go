@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/alecthomas/kong"
-	"github.com/marcsauter/terraform-registry/internal/cmd"
+	"github.com/postfinance/terraform-registry/internal/cmd"
 	"github.com/postfinance/flash"
 	"github.com/zbindenren/king"
 )
