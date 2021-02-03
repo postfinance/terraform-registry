@@ -1,4 +1,7 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/marcsauter/terraform-registry)](https://goreportcard.com/report/github.com/marcsauter/terraform-registry)
+[![Release](https://img.shields.io/github/release/postfinance/kubectl-vault_sync.svg?style=for-the-badge)](https://github.com/marcsauter/terraform-registry/releases/latest)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
+[![Build](https://img.shields.io/github/workflow/status/postfinance/kubectl-vault_sync/build?style=for-the-badge)](https://github.com/marcsauter/terraform-registry/actions?query=workflow%3Abuild)
+[![Go Report Card](https://img.shields.io/badge/GOREPORT-A%2B-brightgreen.svg?style=for-the-badge)](https://goreportcard.com/report/github.com/marcsauter/terraform-registry)
 
 # terraform-registry
 
