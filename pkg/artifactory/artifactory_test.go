@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/postfinance/terraform-registry/pkg/artifactory"
 	"github.com/postfinance/httpclient"
+	"github.com/postfinance/terraform-registry/pkg/artifactory"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

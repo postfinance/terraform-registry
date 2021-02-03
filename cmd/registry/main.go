@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/alecthomas/kong"
-	"github.com/postfinance/terraform-registry/internal/cmd"
 	"github.com/postfinance/flash"
+	"github.com/postfinance/terraform-registry/internal/cmd"
 	"github.com/zbindenren/king"
 )
 
