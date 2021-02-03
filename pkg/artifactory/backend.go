@@ -1,31 +1,39 @@
 package artifactory
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"path"
 	"strings"
 
 	"github.com/marcsauter/terraform-registry/pkg/provider"
 	"github.com/postfinance/httpclient"
+	"golang.org/x/crypto/openpgp"
+	"golang.org/x/crypto/openpgp/armor"
+	"golang.org/x/crypto/openpgp/packet"
 )
 
 // Constants
 const (
-	Namespace = "postfinance"
-	Repo      = "linux-generic-local"
-	RepoPath  = "terraform/providers"
+	Namespace  = "postfinance"
+	Repo       = "linux-generic-local"
+	RepoPath   = "terraform/providers"
+	APIVersion = "5.0" // since Terraform v0.12
 )
 
 // Providers implements provider.Backend for Artifactory
 type Providers struct {
-	url    *url.URL
-	client *Client
+	url        *url.URL
+	client     *Client
+	publicKeys []provider.GPGPublicKey
 }
 
 // New return a new provider.Backend for Artifactory
-func New(baseURL, username, password string) (*Providers, error) {
+func New(baseURL, username, password string, gpgPublicKeyFiles []string) (*Providers, error) {
 	c, err := NewClient(baseURL,
 		httpclient.WithUsername(username),
 		httpclient.WithPassword(password),
@@ -42,9 +50,29 @@ func New(baseURL, username, password string) (*Providers, error) {
 	// modify path to point to the location of the terraform providers
 	u.Path = path.Join(u.Path)
 
+	publicKeys := []provider.GPGPublicKey{}
+
+	for _, f := range gpgPublicKeyFiles {
+		data, err := ioutil.ReadFile(f) //nolint:gosec // shouldn't be a threat
+		if err != nil {
+			return nil, err
+		}
+
+		keyID, err := getPublicKeyID(data)
+		if err != nil {
+			return nil, err
+		}
+
+		publicKeys = append(publicKeys, provider.GPGPublicKey{
+			KeyID:      keyID,
+			ASCIIArmor: string(data),
+		})
+	}
+
 	return &Providers{
-		url:    u,
-		client: c,
+		url:        u,
+		client:     c,
+		publicKeys: publicKeys,
 	}, nil
 }
 
@@ -69,7 +97,7 @@ func (s Providers) Versions(req *provider.VersionsRequest) (*provider.VersionsRe
 		if !ok {
 			v = &provider.Version{
 				Version:   version,
-				Protocols: []string{},
+				Protocols: []string{APIVersion},
 				Platforms: []provider.Platform{},
 			}
 			versions[version] = v
@@ -152,11 +180,11 @@ func (s Providers) getProviders(t string) (map[string][]*provider.DownloadRespon
 func (s Providers) processZIP(a Artifact, ptype string) (string, *provider.DownloadResponse, error) {
 	var schemaError = fmt.Errorf("name of .zip file does not match schema terraform-provider-:type:_:os:_:arch:-:version:.zip: %s", a.Name)
 
-	// "terraform-provider-aixboms_linux_x86_64-1.1.8.zip"
+	// "terraform-provider-example_linux_x86_64-1.1.8.zip"
 	name := strings.TrimSuffix(a.Name, ".zip")
-	// "terraform-provider-aixboms_linux_x86_64-1.1.8"
+	// "terraform-provider-example_linux_x86_64-1.1.8"
 	part := strings.Split(name, "-")
-	// []string{"terraform", "provider", "aixboms_linux_x86_64", "1.1.8"}
+	// []string{"terraform", "provider", "example_linux_x86_64", "1.1.8"}
 
 	if len(part) != 4 {
 		return "", nil, schemaError
@@ -174,15 +202,17 @@ func (s Providers) processZIP(a Artifact, ptype string) (string, *provider.Downl
 	)
 
 	res := &provider.DownloadResponse{
-		Protocols:           []string{},
+		Protocols:           []string{APIVersion},
 		OS:                  p[1],
 		Arch:                replaceArch(p[2]),
 		Filename:            a.Name,
 		DownloadURL:         s.buildURL(a, a.Name),
-		ShasumsURL:          s.buildURL(a, fmt.Sprintf(sha256sums, ptype, version, "")),     // terraform-provider-aixboms_1.1.8_SHA256SUMS.txt
-		ShasumsSignatureURL: s.buildURL(a, fmt.Sprintf(sha256sums, ptype, version, ".sig")), // terraform-provider-aixboms_1.1.8_SHA256SUMS.txt.sig
+		ShasumsURL:          s.buildURL(a, fmt.Sprintf(sha256sums, ptype, version, "")),     // terraform-provider-example_1.1.8_SHA256SUMS.txt
+		ShasumsSignatureURL: s.buildURL(a, fmt.Sprintf(sha256sums, ptype, version, ".sig")), // terraform-provider-example_1.1.8_SHA256SUMS.txt.sig
 		Shasum:              a.SHA256,
-		SigningKeys:         provider.SigningKeys{},
+		SigningKeys: provider.SigningKeys{
+			GPGPublicKeys: s.publicKeys,
+		},
 	}
 
 	return version, res, nil
@@ -192,6 +222,31 @@ func (s Providers) buildURL(a Artifact, n string) string {
 	return fmt.Sprintf("%v/%s", s.url, path.Join(a.Repo, a.Path, n))
 }
 
+// getPublicKeyID checks the key type and returns the hexadecimal key id all uppercase
+func getPublicKeyID(keyData []byte) (string, error) {
+	block, err := armor.Decode(bytes.NewReader(keyData))
+	if err != nil {
+		return "", err
+	}
+
+	if block.Type != openpgp.PublicKeyType {
+		return "", fmt.Errorf("wrong key type - public key required")
+	}
+
+	pkt, err := packet.NewReader(block.Body).Next()
+	if err != nil {
+		return "", err
+	}
+
+	key, ok := pkt.(*packet.PublicKey)
+	if !ok {
+		return "", errors.New("failed to parse public key")
+	}
+
+	return fmt.Sprintf("%X", key.KeyId), nil
+}
+
+// replaceArch replace architecture definition to fit terraform requirements
 func replaceArch(p string) string {
 	const (
 		amd64  = "amd64"

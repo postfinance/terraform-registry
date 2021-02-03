@@ -23,7 +23,7 @@ type Globals struct {
 	Debug           bool                 `help:"Log debug output."`
 	Version         king.VersionFlag     `help:"Show version information"`
 	HTTPListen      string               `help:"HTTP Port." default:":8080"`
-	Namespace       string               `help:"The namespace portion of the address of the requested provider." req:""`
+	Namespace       string               `help:"The namespace portion of the address of the requested provider." required:""`
 	ModuleBackend   moduleBackendFlags   `embed:"true" prefix:"module-backend-"`
 	ProviderBackend providerBackendFlags `embed:"true" prefix:"provider-backend-"`
 	Profiler        profilerFlags        `embed:"true" prefix:"profiler-"`
@@ -40,13 +40,14 @@ func (m *moduleBackendFlags) backend() (module.Backend, error) {
 }
 
 type providerBackendFlags struct {
-	URL      string `help:"URL of the provider backend. If not set, the provider registry will not be provided."`
-	Username string `help:"Username"`
-	Password string `help:"Password"`
+	URL               string   `help:"URL of the provider backend. If not set, the provider registry will not be provided."`
+	Username          string   `help:"Username"`
+	Password          string   `help:"Password"`
+	GPGPublicKeyFiles []string `help:"File(s) with ASCII armored GPG public keys" type:"existingfile" placeholder:"KEYFILE" required:""`
 }
 
 func (p *providerBackendFlags) backend() (provider.Backend, error) {
-	return artifactory.New(p.URL, p.Username, p.Password)
+	return artifactory.New(p.URL, p.Username, p.Password, p.GPGPublicKeyFiles)
 }
 
 type profilerFlags struct {

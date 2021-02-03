@@ -111,6 +111,7 @@ func (reg *Registry) Run(ctx context.Context) error {
 	}
 }
 
+// start the registry server
 func (reg *Registry) start() error {
 	reg.l.Infow("starting registry server")
 	reg.server = &http.Server{
@@ -125,6 +126,7 @@ func (reg *Registry) start() error {
 	return nil
 }
 
+// stop the registry server
 func (reg *Registry) stop() error {
 	defer reg.wg.Done()
 	defer reg.l.Info("registry server stopped")
@@ -144,8 +146,9 @@ func (reg *Registry) discovery(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, reg.services)
 }
 
+// healthz endpoint
 func (reg *Registry) healthz(w http.ResponseWriter, r *http.Request) {
 	status := struct{}{}
-
+	// sauterm
 	render.JSON(w, r, status)
 }

@@ -36,6 +36,7 @@ func (a API) Routes() chi.Router {
 	return api
 }
 
+// errorResponse builds the error response
 func errorResponse(err error) interface{} {
 	return struct {
 		Errors []string `json:"errors"`
@@ -44,6 +45,8 @@ func errorResponse(err error) interface{} {
 	}
 }
 
+// versionsHandler handles GET :namespace/:type/versions
+// returns json
 func (a API) versionsHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resp, err := a.b.Versions(&provider.VersionsRequest{
@@ -60,6 +63,8 @@ func (a API) versionsHandler() http.HandlerFunc {
 	}
 }
 
+// downloadHandler handles GET :namespace/:type/:version/download/:os/:arch
+// returns json
 func (a API) downloadHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resp, err := a.b.Download(&provider.DownloadRequest{

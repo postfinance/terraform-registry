@@ -14,6 +14,7 @@ require (
 	github.com/unrolled/render v1.0.3
 	github.com/zbindenren/king v0.0.2
 	go.uber.org/zap v1.16.0
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/mod v0.1.1-0.20191107180719-034126e5016b // indirect
 	golang.org/x/tools v0.0.0-20200207183749-b753a1ba74fa // indirect
 )

@@ -2,6 +2,7 @@
 package module
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -38,10 +39,25 @@ func (a API) Routes() chi.Router {
 	return api
 }
 
-func (a API) versionsHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {}
+// errorResponse builds the error response
+func errorResponse(err error) interface{} {
+	return struct {
+		Errors []string `json:"errors"`
+	}{
+		Errors: []string{err.Error()},
+	}
 }
 
+// versionsHandler handles GET :namespace/:name/:provider/versions
+func (a API) versionsHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		_ = a.r.JSON(w, http.StatusNotImplemented, errorResponse(errors.New("not implemented")))
+	}
+}
+
+// downloadHandler handles GET :namespace/:name/:provider/:version/download
 func (a API) downloadHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {}
+	return func(w http.ResponseWriter, r *http.Request) {
+		_ = a.r.JSON(w, http.StatusNotImplemented, errorResponse(errors.New("not implemented")))
+	}
 }

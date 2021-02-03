@@ -63,7 +63,7 @@ type SigningKeys struct {
 type GPGPublicKey struct {
 	KeyID          string `json:"key_id"`
 	ASCIIArmor     string `json:"ascii_armor"`
-	TrustSignature string `json:"trust_signature"`
-	Source         string `json:"source"`
-	SourceURL      string `json:"source_url"`
+	TrustSignature string `json:"trust_signature,omitempty"`
+	Source         string `json:"source,omitempty"`
+	SourceURL      string `json:"source_url,omitempty"`
 }
