@@ -31,6 +31,3 @@ dockers:
         - --label=org.opencontainers.image.revision={{ .ShortCommit }}
         - --label=org.opencontainers.image.created={{ .Date }}
         - --label=org.opencontainers.image.vendor=PostFinance AG
-before:
-    hooks:
-        - go generate ./...
