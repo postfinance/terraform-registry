@@ -11,8 +11,6 @@ builds:
       binary: registry
       env:
         - CGO_ENABLED=0
-snapshot:
-    name_template: '{{ .Version }}-{{ .Env.PROJECT_RELEASE }}'
 checksum:
     name_template: checksums.txt
 dockers:
@@ -22,35 +20,17 @@ dockers:
       goarch: amd64
       dockerfile: packaging/docker/Dockerfile
       image_templates:
-        - '{{ .Env.DOCKER_IMAGE_PREFIX }}pf/{{ .ProjectName }}:{{ .Major }}.{{ .Minor }}.{{ .Patch }}'
-        - '{{ .Env.DOCKER_IMAGE_PREFIX }}pf/{{ .ProjectName }}:{{ .Major }}.{{ .Minor }}'
-        - '{{ .Env.DOCKER_IMAGE_PREFIX }}pf/{{ .ProjectName }}:{{ .Major }}'
-        - '{{ .Env.DOCKER_IMAGE_PREFIX }}pf/{{ .ProjectName }}:latest'
+        - 'postfinance/terraform-registry:{{ .Major }}.{{ .Minor }}.{{ .Patch }}'
+        - 'postfinance/terraform-registry:{{ .Major }}.{{ .Minor }}'
+        - 'postfinance/terraform-registry:{{ .Major }}'
+        - 'postfinance/terraform-registry:latest'
       extra_files:
         - packaging/docker/docker-entrypoint.sh
       build_flag_templates:
         - --label=org.opencontainers.image.version={{ .Version }}
-        - --label=org.opencontainers.image.url={{ .Env.CI_PROJECT_URL }}
-        - --label=org.opencontainers.image.source={{ .Env.CI_PROJECT_URL }}
         - --label=org.opencontainers.image.revision={{ .ShortCommit }}
         - --label=org.opencontainers.image.created={{ .Date }}
         - --label=org.opencontainers.image.vendor=PostFinance AG
-        - --label=ch.postfinance.go.version={{ .Env.GO_VERSION }}
-publishers:
-    - name: artifactory
-      cmd: release-helper publish --project-name {{ .ProjectName }} --project-url {{ .Env.CI_PROJECT_URL }} --artifact-path {{ .ArtifactPath }} --arch {{ .Arch }}
-      env:
-        - CREATE_GO_APP_VERSION=0.12.1-rc6
-        - GO_VERSION={{ .Env.GO_VERSION }}
-        - GIT_SHORT_COMMIT={{ .ShortCommit }}
-        - ARTIFACTORY_DEB_URL={{ .Env.ARTIFACTORY_DEB_URL }}
-        - ARTIFACTORY_RPM_RHEL7_URL={{ .Env.ARTIFACTORY_RPM_RHEL7_URL }}
-        - ARTIFACTORY_RPM_RHEL8_URL={{ .Env.ARTIFACTORY_RPM_RHEL8_URL }}
-        - ARTIFACTORY_ZIP_URL={{ .Env.ARTIFACTORY_ZIP_URL }}
-        - DOCKER_PASSWORD={{ .Env.DOCKER_PASSWORD }}
-        - DOCKER_USERNAME={{ .Env.DOCKER_USERNAME }}
-        - SUPPORTED_DEBIAN_RELEASES={{ .Env.SUPPORTED_DEBIAN_RELEASES }}
 before:
     hooks:
         - go generate ./...
-        - release-helper fix-permissions
