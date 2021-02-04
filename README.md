@@ -119,3 +119,4 @@ curl -s http://localhost:8080/v1/providers/postfinance/example/0.0.1/download/li
     ]
   }
 }```
+

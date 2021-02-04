@@ -69,7 +69,7 @@ func New(l *zap.SugaredLogger, reg prometheus.Registerer, options ...Option) (*R
 
 	if r.providerBackend != nil {
 		p := "/v1/providers"
-		r.services["providers.v1"] = p
+		r.services["providers.v1"] = p + "/"
 
 		l.Info("mount api endpoint", "path", p)
 		r.router.Mount(p, providerAPI.New(r.providerBackend).Routes())
@@ -77,7 +77,7 @@ func New(l *zap.SugaredLogger, reg prometheus.Registerer, options ...Option) (*R
 
 	if r.moduleBackend != nil {
 		p := "/v1/modules"
-		r.services["modules.v1"] = p
+		r.services["modules.v1"] = p + "/"
 
 		l.Info("mount api endpoint", "path", p)
 		r.router.Mount(p, moduleAPI.New(r.moduleBackend).Routes())
