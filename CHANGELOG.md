@@ -1,3 +1,12 @@
+## 0.1.4 (2021-02-04)
+
+
+### Bug Fixes
+
+* **common**: add trailing / in .well-known/terraform.json (b4f41bae9f6ddc9d78338f7fe971e24284c50086)
+
+
+
 ## 0.1.3 (2021-02-03)
 
 
