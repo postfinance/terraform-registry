@@ -105,8 +105,3 @@ func TestGetPublicKeyID(t *testing.T) {
 
 	assert.Equal(t, exp, act)
 }
-
-func TestReplaceArch(t *testing.T) {
-	assert.Equal(t, "amd64", replaceArch("x86_64"))
-	assert.Equal(t, "x86_64", replaceArch("amd64"))
-}

@@ -206,7 +206,7 @@ func (s Providers) processZIP(a Artifact, ptype string) (string, *provider.Downl
 	res := &provider.DownloadResponse{
 		Protocols:           []string{APIVersion},
 		OS:                  p[1],
-		Arch:                replaceArch(p[2]),
+		Arch:                p[2],
 		Filename:            a.Name,
 		DownloadURL:         s.buildURL(a, a.Name),
 		ShasumsURL:          s.buildURL(a, fmt.Sprintf(sha256sums, ptype, version, "")),     // terraform-provider-example_1.1.8_SHA256SUMS.txt
@@ -246,21 +246,4 @@ func getPublicKeyID(keyData []byte) (string, error) {
 	}
 
 	return fmt.Sprintf("%X", key.KeyId), nil
-}
-
-// replaceArch replace architecture definition to fit terraform requirements
-func replaceArch(p string) string {
-	const (
-		amd64  = "amd64"
-		x86_64 = "x86_64"
-	)
-
-	switch p {
-	case x86_64:
-		return amd64
-	case amd64:
-		return x86_64
-	default:
-		return p
-	}
 }
