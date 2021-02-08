@@ -1,3 +1,12 @@
+## 0.1.5 (2021-02-08)
+
+
+### Bug Fixes
+
+* **common**: replaceArch removed (41ea0607f9fa6a738addfe0110b31308c73b4f91)
+
+
+
 ## 0.1.4 (2021-02-04)
 
 
