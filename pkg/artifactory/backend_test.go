@@ -14,7 +14,7 @@ func TestProcessZIP(t *testing.T) {
 	baseURL := "https://repo.example.com/artifactory"
 	repo := "generic"
 	repoPath := "terraform/providers"
-	name := "terraform-provider-example_linux_x86_64-0.0.1.zip"
+	name := "terraform-provider-example_linux_amd64-0.0.1.zip"
 	ptype := "example"
 
 	u, err := url.Parse(baseURL)
