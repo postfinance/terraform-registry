@@ -23,7 +23,7 @@ type CLI struct {
 	Globals
 }
 
-// Globals are the global parameters for the lslb server.
+// Globals are the global parameters for the terraform-registry.
 type Globals struct {
 	Debug           bool                 `help:"Log debug output."`
 	Version         king.VersionFlag     `help:"Show version information"`
