@@ -14,6 +14,7 @@ import (
 	"github.com/postfinance/terraform-registry/pkg/module"
 	"github.com/postfinance/terraform-registry/pkg/provider"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )
@@ -56,8 +57,8 @@ func New(l *zap.SugaredLogger, reg prometheus.Registerer, options ...Option) (*R
 	r.router.Get("/healthz", r.healthz)
 
 	promHandler := func() http.Handler {
-		r.reg.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
-		r.reg.MustRegister(prometheus.NewGoCollector())
+		r.reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+		r.reg.MustRegister(collectors.NewGoCollector())
 		g, _ := r.reg.(prometheus.Gatherer)
 
 		return promhttp.InstrumentMetricHandler(

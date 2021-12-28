@@ -5,17 +5,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 	"strings"
 
 	"github.com/postfinance/httpclient"
 	"github.com/postfinance/terraform-registry/pkg/provider"
-	"golang.org/x/crypto/openpgp"
-	"golang.org/x/crypto/openpgp/armor"
-	"golang.org/x/crypto/openpgp/packet"
+	"golang.org/x/crypto/openpgp"        //nolint:staticcheck // deprecated
+	"golang.org/x/crypto/openpgp/armor"  //nolint:staticcheck // deprecated
+	"golang.org/x/crypto/openpgp/packet" //nolint:staticcheck // deprecated
 )
 
 // Constants
@@ -55,7 +55,7 @@ func New(client *http.Client, baseURL, username, password string, gpgPublicKeyFi
 	publicKeys := []provider.GPGPublicKey{}
 
 	for _, f := range gpgPublicKeyFiles {
-		data, err := ioutil.ReadFile(f) //nolint:gosec // shouldn't be a threat
+		data, err := os.ReadFile(f) //nolint:gosec // shouldn't be a threat
 		if err != nil {
 			return nil, err
 		}

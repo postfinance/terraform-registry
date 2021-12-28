@@ -1,3 +1,5 @@
+//go:generate go install golang.org/x/tools/cmd/goimports@latest
+//go:generate go install github.com/postfinance/httpclient/cmd/httpclient-gen-go@latest
 //go:generate httpclient-gen-go -path . -package artifactory -force
 
 // Package artifactory implements a minimal artifactory client and the provider backend for the PostFinance Artifactory
@@ -6,7 +8,7 @@ package artifactory
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"path"
 
@@ -43,7 +45,7 @@ func (s QueryImpl) Items(ctx context.Context, find AQL) ([]Artifact, *http.Respo
 	// the AQL query has to be text/plain but the answer will be application/json
 	s.client.RequestCallback = func(r *http.Request) *http.Request {
 		r.Header.Set("Content-Type", httpclient.ContentTypeText)
-		r.Body = ioutil.NopCloser(bytes.NewBuffer(find.Bytes()))
+		r.Body = io.NopCloser(bytes.NewBuffer(find.Bytes()))
 
 		return r
 	}

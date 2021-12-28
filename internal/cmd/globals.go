@@ -4,7 +4,6 @@ package cmd
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -59,7 +58,7 @@ func (p *providerBackendFlags) backend() (provider.Backend, error) {
 	}
 
 	if p.CACert != "" {
-		caCert, err := ioutil.ReadFile(p.CACert)
+		caCert, err := os.ReadFile(p.CACert)
 		if err != nil {
 			log.Fatal(err)
 		}
