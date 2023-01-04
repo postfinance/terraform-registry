@@ -116,8 +116,10 @@ func (reg *Registry) Run(ctx context.Context) error {
 func (reg *Registry) start() error {
 	reg.l.Infow("starting registry server")
 	reg.server = &http.Server{
-		Addr:    reg.listenAddr,
-		Handler: reg.router,
+		Addr:         reg.listenAddr,
+		Handler:      reg.router,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	if err := reg.server.ListenAndServe(); err != http.ErrServerClosed {

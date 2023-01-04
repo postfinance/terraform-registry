@@ -1,3 +1,4 @@
+// Package main for registry
 package main
 
 import (
