@@ -1,3 +1,12 @@
+## 0.1.6 (2024-01-22)
+
+
+### Bug Fixes
+
+* **common**: replace deprecated golang.org/x/crypto/openpgp and upgrade project (989100219b486dd732fc6228d06f744d1220ae59)
+
+
+
 ## 0.1.5 (2021-02-08)
 
 
