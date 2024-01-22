@@ -3,19 +3,17 @@ package artifactory
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
+	"github.com/ProtonMail/gopenpgp/v2/crypto"
 	"github.com/postfinance/httpclient"
 	"github.com/postfinance/terraform-registry/pkg/provider"
-	"golang.org/x/crypto/openpgp"        //nolint:staticcheck // deprecated
-	"golang.org/x/crypto/openpgp/armor"  //nolint:staticcheck // deprecated
-	"golang.org/x/crypto/openpgp/packet" //nolint:staticcheck // deprecated
 )
 
 // Constants
@@ -54,19 +52,19 @@ func New(client *http.Client, baseURL, username, password string, gpgPublicKeyFi
 
 	publicKeys := []provider.GPGPublicKey{}
 
-	for _, f := range gpgPublicKeyFiles {
-		data, err := os.ReadFile(f) //nolint:gosec // shouldn't be a threat
+	for _, n := range gpgPublicKeyFiles {
+		data, err := os.ReadFile(filepath.Clean(n))
 		if err != nil {
 			return nil, err
 		}
 
-		keyID, err := getPublicKeyID(data)
+		key, err := crypto.NewKeyFromArmoredReader(bytes.NewBuffer(data))
 		if err != nil {
 			return nil, err
 		}
 
 		publicKeys = append(publicKeys, provider.GPGPublicKey{
-			KeyID:      keyID,
+			KeyID:      strings.ToUpper(key.GetHexKeyID()),
 			ASCIIArmor: string(data),
 		})
 	}
@@ -222,28 +220,4 @@ func (s Providers) processZIP(a Artifact, ptype string) (string, *provider.Downl
 
 func (s Providers) buildURL(a Artifact, n string) string {
 	return fmt.Sprintf("%v/%s", s.url, path.Join(a.Repo, a.Path, n))
-}
-
-// getPublicKeyID checks the key type and returns the hexadecimal key id all uppercase
-func getPublicKeyID(keyData []byte) (string, error) {
-	block, err := armor.Decode(bytes.NewReader(keyData))
-	if err != nil {
-		return "", err
-	}
-
-	if block.Type != openpgp.PublicKeyType {
-		return "", fmt.Errorf("wrong key type - public key required")
-	}
-
-	pkt, err := packet.NewReader(block.Body).Next()
-	if err != nil {
-		return "", err
-	}
-
-	key, ok := pkt.(*packet.PublicKey)
-	if !ok {
-		return "", errors.New("failed to parse public key")
-	}
-
-	return fmt.Sprintf("%X", key.KeyId), nil
 }

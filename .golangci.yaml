@@ -23,7 +23,6 @@ linters-settings:
       - performance
       - style
     disabled-checks:
-      - whyNoLint
       - hugeParam
   gocyclo:
     min-complexity: 15
@@ -33,8 +32,6 @@ linters-settings:
     check-shadowing: true
   lll:
     line-length: 140
-  maligned:
-    suggest-new: true
   misspell:
     locale: US
   nolintlint:
@@ -49,8 +46,6 @@ linters:
   disable-all: true
   enable:
     - bodyclose
-    - deadcode
-    - depguard
     - dogsled
     - dupl
     - errcheck
@@ -62,7 +57,6 @@ linters:
     - goconst
     - gocritic
     - gocyclo
-    # - godox
     - gofmt
     - goimports
     - revive
@@ -71,20 +65,19 @@ linters:
     - gosimple
     - govet
     - ineffassign
-    # - lll
     - misspell
     - nakedret
     - prealloc
+    - protogetter
     - rowserrcheck
     - exportloopref
     - staticcheck
-    - structcheck
     - stylecheck
+    - sqlclosecheck
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
     - whitespace
     - wsl
 

@@ -13,11 +13,11 @@ BINARIES := $(shell find ./dist ! -name '*goreleaserdocker*' -path '*_linux_*' -
 
 ## build: build the binaries only
 build:
-	goreleaser build --rm-dist --snapshot
+	goreleaser build --clean --snapshot
 
 ## snapshot: create a snapshot release
 snapshot:
-	goreleaser release --snapshot --rm-dist --skip-sign
+	goreleaser release --snapshot --clean --skip-sign
 
 ## clean: cleanup
 clean:

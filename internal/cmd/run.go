@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/alecthomas/kong"
 	"github.com/postfinance/terraform-registry/internal/registry"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
@@ -15,7 +14,7 @@ import (
 type runCmd struct {
 }
 
-func (r runCmd) Run(app *kong.Context, g *Globals, l *zap.SugaredLogger) error {
+func (r runCmd) Run(g *Globals, l *zap.SugaredLogger) error {
 	l.Info("start Terraform registry")
 
 	ctx := contextWithSignal(context.Background(), func(s os.Signal) {

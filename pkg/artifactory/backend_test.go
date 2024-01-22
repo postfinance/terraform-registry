@@ -1,7 +1,6 @@
 package artifactory
 
 import (
-	"io/ioutil"
 	"net/url"
 	"testing"
 
@@ -15,7 +14,7 @@ func TestProcessZIP(t *testing.T) {
 	repo := "generic"
 	repoPath := "terraform/providers"
 	name := "terraform-provider-example_linux_amd64-0.0.1.zip"
-	ptype := "example"
+	pType := "example"
 
 	u, err := url.Parse(baseURL)
 	require.NoError(t, err)
@@ -46,7 +45,7 @@ func TestProcessZIP(t *testing.T) {
 			},
 		}
 
-		version, act, err := s.processZIP(a, ptype)
+		version, act, err := s.processZIP(a, pType)
 		require.NoError(t, err)
 
 		assert.Equal(t, "0.0.1", version)
@@ -56,7 +55,7 @@ func TestProcessZIP(t *testing.T) {
 	t.Run("schema error 1", func(t *testing.T) {
 		_, _, err := s.processZIP(Artifact{
 			Name: "terraform-provider-example_linux_x86_64_1.1.8.zip",
-		}, ptype)
+		}, pType)
 
 		assert.Error(t, err)
 	})
@@ -64,7 +63,7 @@ func TestProcessZIP(t *testing.T) {
 	t.Run("schema error 2", func(t *testing.T) {
 		_, _, err := s.processZIP(Artifact{
 			Name: "terraform-provider-example_linux-1.1.8.zip",
-		}, ptype)
+		}, pType)
 
 		assert.Error(t, err)
 	})
@@ -90,18 +89,6 @@ func TestBuildURL(t *testing.T) {
 
 	act := s.buildURL(a, name)
 	exp := baseURL + "/" + repo + "/" + repoPath + "/" + name
-
-	assert.Equal(t, exp, act)
-}
-
-func TestGetPublicKeyID(t *testing.T) {
-	data, err := ioutil.ReadFile("testdata/gpg.pub") //nolint:gosec // shouldn't be a threat
-	require.NoError(t, err)
-
-	exp := "180A275B3234F5EB"
-
-	act, err := getPublicKeyID(data)
-	require.NoError(t, err)
 
 	assert.Equal(t, exp, act)
 }
